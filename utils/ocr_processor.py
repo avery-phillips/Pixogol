@@ -6,7 +6,7 @@ import streamlit as st
 
 def extract_text_from_image(image):
     """
-    Extract text from an image using Tesseract OCR
+    Extract text from an image using Tesseract OCR with multiple preprocessing methods
     
     Args:
         image: PIL Image object
@@ -22,19 +22,53 @@ def extract_text_from_image(image):
         if len(img_array.shape) == 3 and img_array.shape[2] == 3:
             img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
-        # Preprocess image for better OCR results
-        processed_image = preprocess_image(img_array)
+        # Get multiple preprocessed versions of the image
+        processed_images = preprocess_image(img_array)
         
-        # Configure Tesseract
-        custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,!?@#$%^&*()_+-=[]{}|;:\'\"<>?/~` '
+        # Try different OCR configurations
+        ocr_configs = [
+            r'--oem 3 --psm 6',  # Standard config
+            r'--oem 3 --psm 8',  # Single word mode (good for logos/brands)
+            r'--oem 3 --psm 7',  # Single text line
+            r'--oem 3 --psm 11', # Sparse text
+            r'--oem 3 --psm 13'  # Raw line without much processing
+        ]
         
-        # Extract text
-        text = pytesseract.image_to_string(processed_image, config=custom_config)
+        all_extracted_text = []
         
-        # Clean up the extracted text
-        cleaned_text = clean_extracted_text(text)
+        # Try each preprocessing method with each OCR config
+        for processed_img in processed_images:
+            for config in ocr_configs:
+                try:
+                    text = pytesseract.image_to_string(processed_img, config=config)
+                    if text and text.strip():
+                        all_extracted_text.append(clean_extracted_text(text))
+                except Exception:
+                    continue
         
-        return cleaned_text
+        # Combine all results and find the best one
+        if all_extracted_text:
+            # Remove duplicates while preserving order
+            unique_texts = []
+            for text in all_extracted_text:
+                if text and text not in unique_texts:
+                    unique_texts.append(text)
+            
+            # Return the longest result (usually most complete)
+            best_text = max(unique_texts, key=len) if unique_texts else ""
+            
+            # Also combine all unique words found across all attempts
+            all_words = set()
+            for text in unique_texts:
+                words = text.split()
+                all_words.update(word.strip('.,!?";:()[]{}') for word in words if len(word) > 1)
+            
+            combined_text = " ".join(sorted(all_words))
+            
+            # Return whichever is more comprehensive
+            return best_text if len(best_text) > len(combined_text) else combined_text
+        else:
+            return ""
         
     except Exception as e:
         st.error(f"OCR processing failed: {str(e)}")
@@ -42,37 +76,56 @@ def extract_text_from_image(image):
 
 def preprocess_image(image):
     """
-    Preprocess image to improve OCR accuracy
+    Preprocess image to improve OCR accuracy with multiple techniques
     
     Args:
         image: OpenCV image array
         
     Returns:
-        Preprocessed image array
+        List of preprocessed image arrays for multi-pass OCR
     """
     try:
+        processed_images = []
+        
         # Convert to grayscale
         if len(image.shape) == 3:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray = image
         
-        # Apply Gaussian blur to reduce noise
+        # Method 1: Original grayscale
+        processed_images.append(gray)
+        
+        # Method 2: Enhanced contrast
+        enhanced = cv2.equalizeHist(gray)
+        processed_images.append(enhanced)
+        
+        # Method 3: Gaussian blur + threshold
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        
-        # Apply threshold to get binary image
         _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        processed_images.append(thresh)
         
-        # Apply morphological operations to clean up the image
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-        processed = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        # Method 4: Adaptive threshold (good for varying lighting)
+        adaptive_thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                               cv2.THRESH_BINARY, 11, 2)
+        processed_images.append(adaptive_thresh)
         
-        return processed
+        # Method 5: Morphological operations
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        processed_images.append(morph)
+        
+        # Method 6: Edge enhancement for text on colored backgrounds
+        edges = cv2.Canny(gray, 50, 150)
+        dilated_edges = cv2.dilate(edges, kernel, iterations=1)
+        processed_images.append(dilated_edges)
+        
+        return processed_images
         
     except Exception as e:
         # If preprocessing fails, return original image
         st.warning(f"Image preprocessing failed, using original: {str(e)}")
-        return image
+        return [image]
 
 def clean_extracted_text(text):
     """

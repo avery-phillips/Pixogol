@@ -71,7 +71,7 @@ def analyze_image(image, filename):
     
     try:
         # Step 1: Extract text using OCR
-        status_text.text("🔤 Extracting text from image...")
+        status_text.text("🔤 Extracting text from image (trying multiple methods)...")
         progress_bar.progress(25)
         
         extracted_text = extract_text_from_image(image)
@@ -79,6 +79,8 @@ def analyze_image(image, filename):
         if not extracted_text or extracted_text.strip() == "":
             st.warning("⚠️ No text detected in the image. Analysis will be limited to visual elements only.")
             extracted_text = "[No text detected]"
+        else:
+            st.success(f"✅ Text extracted: {len(extracted_text)} characters found")
         
         progress_bar.progress(50)
         

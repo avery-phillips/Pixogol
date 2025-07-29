@@ -6,6 +6,54 @@ import streamlit as st
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+def detect_brand_patterns(text):
+    """
+    Detect potential brand patterns in text, even if OCR is imperfect
+    
+    Args:
+        text: Extracted text from OCR
+        
+    Returns:
+        list: List of detected brand patterns
+    """
+    if not text:
+        return []
+    
+    # Common major brands and their variations/partial matches
+    brand_patterns = {
+        'coca-cola': ['coca', 'cola', 'cocacola', 'coke'],
+        'star-wars': ['star', 'wars', 'starwars'],
+        'disney': ['disney', 'disne', 'walt'],
+        'marvel': ['marvel', 'marve'],
+        'nike': ['nike', 'just', 'do', 'it'],
+        'adidas': ['adidas', 'three', 'stripes'],
+        'pepsi': ['pepsi', 'peps'],
+        'mcdonalds': ['mcdonald', 'golden', 'arches'],
+        'apple': ['apple', 'iphone', 'ipad', 'mac'],
+        'google': ['google', 'googl'],
+        'microsoft': ['microsoft', 'windows'],
+        'amazon': ['amazon', 'prime'],
+        'netflix': ['netflix', 'netfli'],
+        'facebook': ['facebook', 'meta'],
+        'twitter': ['twitter', 'tweet'],
+        'instagram': ['instagram', 'insta'],
+        'youtube': ['youtube', 'youtu'],
+        'spotify': ['spotify', 'spotif'],
+        'uber': ['uber'],
+        'starbucks': ['starbuck', 'coffee']
+    }
+    
+    detected = []
+    text_lower = text.lower()
+    
+    for brand, patterns in brand_patterns.items():
+        for pattern in patterns:
+            if pattern in text_lower:
+                detected.append(brand)
+                break  # Only add once per brand
+    
+    return detected
+
 def analyze_legal_risks(extracted_text, filename):
     """
     Analyze extracted text for copyright, trademark, and brand risks using GPT-4
@@ -21,10 +69,13 @@ def analyze_legal_risks(extracted_text, filename):
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
         # do not change this unless explicitly requested by the user
         
+        # Pre-analyze text for common brand patterns
+        brand_patterns = detect_brand_patterns(extracted_text)
+        
         system_prompt = """You are a legal risk assessment expert specializing in intellectual property law. 
         Analyze the provided text for potential copyright, trademark, and brand risks.
         
-        Consider the following risk factors:
+        IMPORTANT: Even if the OCR text is garbled, unclear, or contains only partial words, look for recognizable brand names, trademarks, or copyrighted content. Consider:
         
         COPYRIGHT RISKS:
         - Copyrighted text, quotes, or excerpts from books, articles, songs, etc.
@@ -32,7 +83,7 @@ def analyze_legal_risks(extracted_text, filename):
         - Proprietary content from websites, marketing materials, or publications
         
         TRADEMARK RISKS:
-        - Brand names, product names, or service marks
+        - Brand names, product names, or service marks (even partial matches like "Coca", "Cola", "Star", "Wars")
         - Company names and business identifiers
         - Slogans, taglines, or marketing phrases
         - Logo text or branded terminology
@@ -43,12 +94,18 @@ def analyze_legal_risks(extracted_text, filename):
         - Sports teams, leagues, or organizations
         - Educational institutions or government entities
         
+        Be especially vigilant for major brands like Coca-Cola, Pepsi, Nike, Adidas, Apple, Google, Microsoft, Disney, Star Wars, Marvel, DC Comics, McDonald's, etc.
+        
         Provide a structured JSON response with risk levels (LOW, MEDIUM, HIGH, CRITICAL) and detailed explanations."""
+        
+        additional_context = ""
+        if brand_patterns:
+            additional_context = f"\n\nADDITIONAL CONTEXT: Detected potential brand patterns: {', '.join(brand_patterns)}"
         
         user_prompt = f"""Analyze this text extracted from an image file named "{filename}":
 
 TEXT TO ANALYZE:
-{extracted_text}
+{extracted_text}{additional_context}
 
 Please provide a comprehensive legal risk assessment in JSON format with the following structure:
 {{

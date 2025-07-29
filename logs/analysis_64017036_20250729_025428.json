@@ -1,0 +1,47 @@
+{
+  "analysis_id": "64017036",
+  "timestamp": "2025-07-29T02:54:28.109482",
+  "timestamp_readable": "2025-07-29 02:54:28",
+  "filename": "IMG-20250728-WA0004.jpg",
+  "extracted_text": ") | * ' o [} ol ; rE -' F / L N",
+  "extracted_text_length": 31,
+  "risk_analysis": {
+    "overall_risk_level": "LOW",
+    "confidence_score": 0.9,
+    "risk_categories": {
+      "copyright": {
+        "level": "LOW",
+        "explanation": "The text extracted from the image appears to be a random sequence of characters and symbols, which does not constitute a creative work protected by copyright.",
+        "identified_elements": [],
+        "recommendations": [
+          "No specific actions required as no copyrighted elements were identified."
+        ]
+      },
+      "trademark": {
+        "level": "LOW",
+        "explanation": "The text does not contain any recognizable brand names, product names, or service marks that could be associated with trademark protection.",
+        "identified_elements": [],
+        "recommendations": [
+          "No specific actions required as no trademark elements were identified."
+        ]
+      },
+      "brand": {
+        "level": "LOW",
+        "explanation": "There are no references to well-known companies, brands, or public figures in the text.",
+        "identified_elements": [],
+        "recommendations": [
+          "No specific actions required as no brand elements were identified."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Ensure that any future use of images or text from images does not inadvertently include copyrighted, trademarked, or brand-sensitive content.",
+      "Consider consulting with a legal professional if there is any uncertainty about the content of images or text."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
