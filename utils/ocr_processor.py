@@ -36,9 +36,9 @@ def extract_text_from_image(image):
         
         all_extracted_text = []
         
-        # Try each preprocessing method with each OCR config
-        for processed_img in processed_images:
-            for config in ocr_configs:
+        # Try each preprocessing method with selected OCR configs (limit to avoid timeout)
+        for processed_img in processed_images[:3]:  # Limit to first 3 methods
+            for config in ocr_configs[:3]:  # Limit to first 3 configs
                 try:
                     text = pytesseract.image_to_string(processed_img, config=config)
                     if text and text.strip():
