@@ -1,0 +1,56 @@
+{
+  "analysis_id": "1a17f067",
+  "timestamp": "2025-08-08T03:03:18.412049",
+  "timestamp_readable": "2025-08-08 03:03:18",
+  "filename": "Layspng.png",
+  "extracted_text": "55 5n \\\\ _— a\\ and as be blit‘w‘q:vj cféatéﬁ;%h?ﬁ chip choose ci{ﬁiih/blj” create db dous e——————— f\\\\\\z4 g’ i.\\;7);:??ﬂ:ﬂ)}iji;:‘.7:4~ i;;fégfw:e;ifgl i;fai_l it j;c jr{/th%t llas million phee rrtee tr u*“—lﬂ‘:-—l u3v v“‘,m/;imys‘%f(?‘-‘ wal what win would youcotd yucowd yummy yum’r:ly ‘i ‘would",
+  "extracted_text_length": 297,
+  "risk_analysis": {
+    "overall_risk_level": "HIGH",
+    "confidence_score": 0.95,
+    "risk_categories": {
+      "copyright": {
+        "level": "MEDIUM",
+        "explanation": "The promotional text and campaign name 'Lay's Do us a Flavor' may be protected as creative content under copyright law.",
+        "identified_elements": [
+          "Promotional text: 'What would be yummy as a chip? Create it, and you could WIN $1 MILLION!'",
+          "Campaign name: 'Lay's Do us a Flavor'"
+        ],
+        "recommendations": [
+          "Ensure permission is obtained for using promotional text and campaign names in any derivative works or marketing materials."
+        ]
+      },
+      "trademark": {
+        "level": "HIGH",
+        "explanation": "The image prominently features the Lay's brand name and logo, which are registered trademarks. The use of 'Kettle Cooked', 'Wavy', and the campaign slogan 'Lay's Do us a Flavor' are also potentially trademarked elements.",
+        "identified_elements": [
+          "Brand name and logo: 'Lay's'",
+          "Product names: 'Kettle Cooked', 'Wavy'",
+          "Campaign slogan: 'Lay's Do us a Flavor'"
+        ],
+        "recommendations": [
+          "Avoid using the Lay's brand name, logo, and associated product names in any unauthorized commercial context. Seek legal advice if planning to use these elements in any promotional activities."
+        ]
+      },
+      "brand": {
+        "level": "HIGH",
+        "explanation": "The presence of the Lay's brand and its associated promotional campaign suggests a high risk of brand infringement if used without authorization.",
+        "identified_elements": [
+          "Lay's brand",
+          "Lay's promotional campaign"
+        ],
+        "recommendations": [
+          "Do not use the Lay's brand or its promotional campaign elements without explicit permission from the brand owner. Consider alternative branding strategies that do not infringe on existing trademarks."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Conduct a thorough review of any planned use of the Lay's brand elements to ensure compliance with intellectual property laws. Consult with a legal professional specializing in trademark law before proceeding with any marketing or promotional activities involving these elements."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
