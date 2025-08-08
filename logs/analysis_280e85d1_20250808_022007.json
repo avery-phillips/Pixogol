@@ -1,0 +1,51 @@
+{
+  "analysis_id": "280e85d1",
+  "timestamp": "2025-08-08T02:20:07.128152",
+  "timestamp_readable": "2025-08-08 02:20:07",
+  "filename": "DC Test.png",
+  "extracted_text": "4%'r»\\o‘z \\'/f‘a a8 i.;!‘-—“/-f;%%iff l‘,,‘/\"’.-/;g!“q‘ii vy yy ‘\\;;rf;%\\ ‘».‘.»eyi‘i",
+  "extracted_text_length": 85,
+  "risk_analysis": {
+    "overall_risk_level": "HIGH",
+    "confidence_score": 0.8,
+    "risk_categories": {
+      "copyright": {
+        "level": "LOW",
+        "explanation": "The text is garbled and does not appear to contain any recognizable copyrighted text or creative works.",
+        "identified_elements": [],
+        "recommendations": [
+          "Verify the original image content to ensure no copyrighted material is present."
+        ]
+      },
+      "trademark": {
+        "level": "HIGH",
+        "explanation": "The filename 'DC Test.png' suggests potential association with DC Comics, a well-known trademark. The garbled text could also obscure other trademarked elements.",
+        "identified_elements": [
+          "Potential reference to DC Comics"
+        ],
+        "recommendations": [
+          "Review the original image for any trademarked logos or names related to DC Comics or other brands."
+        ]
+      },
+      "brand": {
+        "level": "HIGH",
+        "explanation": "The filename 'DC Test.png' implies a connection to a major brand, potentially DC Comics. The garbled text may also hide brand names or logos.",
+        "identified_elements": [
+          "Possible DC Comics branding"
+        ],
+        "recommendations": [
+          "Inspect the original image for any brand logos or identifiers, especially those related to DC Comics."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Conduct a thorough review of the original image to identify any brand or trademark elements.",
+      "Consider consulting with a legal professional to ensure compliance with intellectual property laws."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}

@@ -57,7 +57,7 @@ def detect_brand_patterns(text):
     if not detected and text_lower:
         # Look for character sequences that might be corrupted brand names
         fuzzy_patterns = {
-            'coca-cola': ['c.*o.*k.*e', 'd.*i.*e.*t', 'c.*o.*l.*a'],
+            'coca-cola': ['c.*o.*k.*e', 'd.*i.*e.*t', 'c.*o.*l.*a', 'o.*k.*e', 'i.*e.*t'],
             'star-wars': ['s.*t.*a.*r', 'w.*a.*r.*s'],
         }
         
@@ -97,6 +97,12 @@ def analyze_legal_risks(extracted_text, filename):
         3. If the filename suggests branded content (like "DC Test", "Coke", etc.), factor this into your analysis
         4. Consider that branded merchandise often has poor OCR results due to stylized fonts and backgrounds
         
+        FILENAME INTERPRETATION RULES:
+        - "DC" in filename context often means "Diet Coke" (not DC Comics)
+        - "Coke" variations: "DC", "Diet", "Coca"
+        - "SW" often means "Star Wars"
+        - Consider context clues from the full filename
+        
         BRAND DETECTION PRIORITIES:
         - Coca-Cola/Diet Coke: Look for 'c', 'o', 'k', 'e', 'd', 'i', 'e', 't' patterns even in garbled text
         - Star Wars: Look for 's', 't', 'a', 'r', 'w', 'a', 'r', 's' patterns
@@ -120,7 +126,9 @@ def analyze_legal_risks(extracted_text, filename):
         - Educational institutions or government entities
         
         RISK ESCALATION RULES:
-        - If filename contains brand hints ("DC", "Coke", etc.), automatically escalate to HIGH risk
+        - If filename contains "DC" + "Test" pattern, likely Diet Coke merchandise → HIGH risk
+        - If filename contains "Coke", "Diet", "Cola" → HIGH risk for Coca-Cola brands
+        - If filename contains "SW" or "Star" → HIGH risk for Star Wars
         - If text is garbled but contains potential brand letter sequences, escalate to MEDIUM-HIGH risk
         - Major brands like Coca-Cola, Star Wars, Disney, Nike should result in HIGH or CRITICAL risk levels
         
@@ -137,8 +145,10 @@ FILE NAME ANALYSIS: The filename "{filename}" may contain clues about the conten
 TEXT TO ANALYZE:
 {extracted_text if extracted_text.strip() else "[OCR failed to extract readable text - text appears garbled or corrupted]"}{additional_context}
 
-SPECIAL INSTRUCTIONS:
-- If the filename contains "DC", "Coke", "Diet", "Star", "Wars" or other brand hints, factor this heavily into your risk assessment
+SPECIAL INSTRUCTIONS FOR THIS ANALYSIS:
+- FILENAME ANALYSIS: "DC Test" most likely refers to "Diet Coke Test" (branded merchandise testing)
+- DO NOT interpret "DC" as "DC Comics" unless there are clear comic book indicators
+- Focus on Coca-Cola/Diet Coke trademark and brand risks
 - Garbled or corrupted OCR text from branded merchandise should still result in HIGH risk levels
 - Even unreadable text may indicate the presence of major brand logos or trademarks
 
