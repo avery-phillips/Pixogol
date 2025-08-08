@@ -1,7 +1,10 @@
 import json
 import os
+import base64
+import io
 from openai import OpenAI
 import streamlit as st
+from PIL import Image
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -70,7 +73,51 @@ def detect_brand_patterns(text):
     
     return list(set(detected))  # Remove duplicates
 
-def analyze_legal_risks(extracted_text, filename):
+def analyze_visual_content(image):
+    """
+    Analyze image content visually using OpenAI's vision model
+    
+    Args:
+        image: PIL Image object
+        
+    Returns:
+        str: Description of visual content and brands detected
+    """
+    try:
+        # Convert image to base64
+        buffer = io.BytesIO()
+        image.save(buffer, format='PNG')
+        image_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "Analyze this image carefully for any visible brand names, logos, trademarks, or copyrighted content. Look specifically for:\n\n1. Any text visible on products, clothing, packaging, or signage\n2. Brand logos, symbols, or emblems\n3. Company names, product names, or service marks\n4. Trademark symbols (™, ®)\n5. Copyrighted characters, artwork, or designs\n\nDescribe exactly what brands, text, and logos you can see in the image. Be very specific about any readable text or recognizable brand elements."
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/png;base64,{image_data}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            max_tokens=500
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        st.warning(f"Visual analysis failed: {str(e)}")
+        return "Visual analysis unavailable"
+
+def analyze_legal_risks(extracted_text, filename, image=None):
     """
     Analyze extracted text for copyright, trademark, and brand risks using GPT-4
     
@@ -87,6 +134,12 @@ def analyze_legal_risks(extracted_text, filename):
         
         # Pre-analyze text for common brand patterns
         brand_patterns = detect_brand_patterns(extracted_text)
+        
+        # Analyze visual content if image is provided
+        visual_analysis = ""
+        if image is not None:
+            visual_content = analyze_visual_content(image)
+            visual_analysis = f"\n\nVISUAL ANALYSIS OF IMAGE:\n{visual_content}"
         
         system_prompt = """You are a legal risk assessment expert specializing in intellectual property law. 
         Analyze the provided text for potential copyright, trademark, and brand risks.
@@ -138,19 +191,19 @@ def analyze_legal_risks(extracted_text, filename):
         if brand_patterns:
             additional_context = f"\n\nADDITIONAL CONTEXT: Detected potential brand patterns: {', '.join(brand_patterns)}"
         
-        user_prompt = f"""Analyze this text extracted from an image file named "{filename}":
+        user_prompt = f"""Analyze this content from an image file named "{filename}":
 
 FILE NAME ANALYSIS: The filename "{filename}" may contain clues about the content.
 
-TEXT TO ANALYZE:
-{extracted_text if extracted_text.strip() else "[OCR failed to extract readable text - text appears garbled or corrupted]"}{additional_context}
+OCR EXTRACTED TEXT:
+{extracted_text if extracted_text.strip() else "[OCR failed to extract readable text - text appears garbled or corrupted]"}{additional_context}{visual_analysis}
 
-SPECIAL INSTRUCTIONS FOR THIS ANALYSIS:
-- FILENAME ANALYSIS: "DC Test" most likely refers to "Diet Coke Test" (branded merchandise testing)
-- DO NOT interpret "DC" as "DC Comics" unless there are clear comic book indicators
-- Focus on Coca-Cola/Diet Coke trademark and brand risks
-- Garbled or corrupted OCR text from branded merchandise should still result in HIGH risk levels
-- Even unreadable text may indicate the presence of major brand logos or trademarks
+ANALYSIS INSTRUCTIONS:
+- Base your analysis primarily on the VISUAL ANALYSIS section if available
+- Use the visual content to identify actual brands, logos, and text visible in the image
+- If visual analysis shows clear brand content, escalate risk levels accordingly
+- Consider both OCR text and visual analysis together for comprehensive assessment
+- Focus on what is actually visible in the image, not just filename hints
 
 Please provide a comprehensive legal risk assessment in JSON format with the following structure:"
 {{

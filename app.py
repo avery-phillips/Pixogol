@@ -88,7 +88,7 @@ def analyze_image(image, filename):
         status_text.text("🧠 Analyzing legal risks with AI...")
         progress_bar.progress(75)
         
-        risk_analysis = analyze_legal_risks(extracted_text, filename)
+        risk_analysis = analyze_legal_risks(extracted_text, filename, image)
         
         progress_bar.progress(90)
         

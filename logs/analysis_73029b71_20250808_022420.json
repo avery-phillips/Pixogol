@@ -1,0 +1,52 @@
+{
+  "analysis_id": "73029b71",
+  "timestamp": "2025-08-08T02:24:20.429043",
+  "timestamp_readable": "2025-08-08 02:24:20",
+  "filename": "DC Test.png",
+  "extracted_text": "4%'r»\\o‘z \\'/f‘a a8 i.;!‘-—“/-f;%%iff l‘,,‘/\"’.-/;g!“q‘ii vy yy ‘\\;;rf;%\\ ‘».‘.»eyi‘i",
+  "extracted_text_length": 85,
+  "risk_analysis": {
+    "overall_risk_level": "HIGH",
+    "confidence_score": 0.9,
+    "risk_categories": {
+      "copyright": {
+        "level": "LOW",
+        "explanation": "The text is garbled and does not appear to contain any recognizable copyrighted text, quotes, or creative works.",
+        "identified_elements": [],
+        "recommendations": [
+          "Ensure that the image does not contain any copyrighted artwork or text."
+        ]
+      },
+      "trademark": {
+        "level": "HIGH",
+        "explanation": "The filename 'DC Test.png' strongly suggests a connection to Diet Coke, a well-known trademark. The garbled text could potentially represent stylized brand elements or logos.",
+        "identified_elements": [
+          "Potential Diet Coke branding inferred from filename"
+        ],
+        "recommendations": [
+          "Verify the image content for any use of Diet Coke trademarks or logos and ensure proper licensing or permissions are in place."
+        ]
+      },
+      "brand": {
+        "level": "HIGH",
+        "explanation": "The filename indicates a high likelihood of association with the Coca-Cola brand, specifically Diet Coke. The text, while unreadable, could contain brand elements.",
+        "identified_elements": [
+          "Potential Coca-Cola/Diet Coke brand association inferred from filename"
+        ],
+        "recommendations": [
+          "Conduct a visual inspection of the image for any brand logos or identifiers and ensure compliance with brand usage guidelines."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Conduct a thorough review of the image to identify any visible brand logos or trademarks.",
+      "Ensure that any use of Coca-Cola or Diet Coke branding is authorized and complies with trademark laws.",
+      "Consider consulting with a legal professional to verify compliance with intellectual property laws."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
