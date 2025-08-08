@@ -45,7 +45,7 @@ def main():
             st.subheader("📸 Uploaded Image")
             try:
                 image = Image.open(uploaded_file)
-                st.image(image, caption=f"Uploaded: {uploaded_file.name}", use_column_width=True)
+                st.image(image, caption=f"Uploaded: {uploaded_file.name}", use_container_width=True)
                 
                 # Image details
                 st.write(f"**Filename:** {uploaded_file.name}")
