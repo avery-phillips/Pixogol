@@ -6,7 +6,7 @@ import streamlit as st
 
 def extract_text_from_image(image):
     """
-    Extract text from an image using Tesseract OCR with multiple preprocessing methods
+    Extract text from an image using optimized OCR for branded merchandise
     
     Args:
         image: PIL Image object
@@ -22,51 +22,73 @@ def extract_text_from_image(image):
         if len(img_array.shape) == 3 and img_array.shape[2] == 3:
             img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
-        # Get multiple preprocessed versions of the image
-        processed_images = preprocess_image(img_array)
-        
-        # Try different OCR configurations
-        ocr_configs = [
-            r'--oem 3 --psm 6',  # Standard config
-            r'--oem 3 --psm 8',  # Single word mode (good for logos/brands)
-            r'--oem 3 --psm 7',  # Single text line
-            r'--oem 3 --psm 11', # Sparse text
-            r'--oem 3 --psm 13'  # Raw line without much processing
-        ]
-        
+        # Try multiple focused OCR approaches
         all_extracted_text = []
         
-        # Try each preprocessing method with selected OCR configs (limit to avoid timeout)
-        for processed_img in processed_images[:3]:  # Limit to first 3 methods
-            for config in ocr_configs[:3]:  # Limit to first 3 configs
-                try:
-                    text = pytesseract.image_to_string(processed_img, config=config)
-                    if text and text.strip():
-                        all_extracted_text.append(clean_extracted_text(text))
-                except Exception:
-                    continue
+        # Approach 1: Basic OCR on original image
+        try:
+            gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY) if len(img_array.shape) == 3 else img_array
+            text1 = pytesseract.image_to_string(gray, config=r'--oem 3 --psm 6')
+            if text1.strip():
+                all_extracted_text.append(clean_extracted_text(text1))
+        except:
+            pass
+            
+        # Approach 2: Enhanced contrast
+        try:
+            gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY) if len(img_array.shape) == 3 else img_array
+            enhanced = cv2.equalizeHist(gray)
+            text2 = pytesseract.image_to_string(enhanced, config=r'--oem 3 --psm 6')
+            if text2.strip():
+                all_extracted_text.append(clean_extracted_text(text2))
+        except:
+            pass
+            
+        # Approach 3: Color-based text extraction (good for branded items)
+        try:
+            color_text = extract_text_by_color(img_array)
+            if color_text.strip():
+                all_extracted_text.append(clean_extracted_text(color_text))
+        except:
+            pass
+            
+        # Approach 4: High contrast binary thresholding
+        try:
+            gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY) if len(img_array.shape) == 3 else img_array
+            _, binary = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+            text3 = pytesseract.image_to_string(binary, config=r'--oem 3 --psm 8')
+            if text3.strip():
+                all_extracted_text.append(clean_extracted_text(text3))
+        except:
+            pass
+            
+        # Approach 5: Individual word detection with scaling
+        try:
+            gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY) if len(img_array.shape) == 3 else img_array
+            # Scale up image for better OCR
+            scale_factor = 2
+            height, width = gray.shape[:2]
+            scaled = cv2.resize(gray, (width * scale_factor, height * scale_factor), interpolation=cv2.INTER_CUBIC)
+            text4 = pytesseract.image_to_string(scaled, config=r'--oem 3 --psm 8')
+            if text4.strip():
+                all_extracted_text.append(clean_extracted_text(text4))
+        except:
+            pass
         
-        # Combine all results and find the best one
+        # Combine all results
         if all_extracted_text:
-            # Remove duplicates while preserving order
-            unique_texts = []
-            for text in all_extracted_text:
-                if text and text not in unique_texts:
-                    unique_texts.append(text)
-            
-            # Return the longest result (usually most complete)
-            best_text = max(unique_texts, key=len) if unique_texts else ""
-            
-            # Also combine all unique words found across all attempts
+            # Combine all unique words from all methods
             all_words = set()
-            for text in unique_texts:
-                words = text.split()
-                all_words.update(word.strip('.,!?";:()[]{}') for word in words if len(word) > 1)
+            for text in all_extracted_text:
+                words = text.lower().split()
+                for word in words:
+                    cleaned_word = word.strip('.,!?";:()[]{}*@#$%^&+=<>/')
+                    if len(cleaned_word) > 1:
+                        all_words.add(cleaned_word)
             
+            # Return combined text
             combined_text = " ".join(sorted(all_words))
-            
-            # Return whichever is more comprehensive
-            return best_text if len(best_text) > len(combined_text) else combined_text
+            return combined_text
         else:
             return ""
         
@@ -74,58 +96,62 @@ def extract_text_from_image(image):
         st.error(f"OCR processing failed: {str(e)}")
         return ""
 
-def preprocess_image(image):
+def extract_text_by_color(image):
     """
-    Preprocess image to improve OCR accuracy with multiple techniques
+    Extract text by isolating colored regions that likely contain text
     
     Args:
-        image: OpenCV image array
+        image: OpenCV image array (BGR)
         
     Returns:
-        List of preprocessed image arrays for multi-pass OCR
+        str: Extracted text from color-isolated regions
     """
     try:
-        processed_images = []
+        # Convert BGR to HSV for better color isolation
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         
-        # Convert to grayscale
-        if len(image.shape) == 3:
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        else:
-            gray = image
+        # Define color ranges for common brand text colors
+        # Red text (like Coca-Cola)
+        red_lower1 = np.array([0, 50, 50])
+        red_upper1 = np.array([10, 255, 255])
+        red_lower2 = np.array([170, 50, 50])
+        red_upper2 = np.array([180, 255, 255])
         
-        # Method 1: Original grayscale
-        processed_images.append(gray)
+        # Black text
+        black_lower = np.array([0, 0, 0])
+        black_upper = np.array([180, 255, 50])
         
-        # Method 2: Enhanced contrast
-        enhanced = cv2.equalizeHist(gray)
-        processed_images.append(enhanced)
+        # White text
+        white_lower = np.array([0, 0, 200])
+        white_upper = np.array([180, 30, 255])
         
-        # Method 3: Gaussian blur + threshold
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-        _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        processed_images.append(thresh)
+        all_text = []
         
-        # Method 4: Adaptive threshold (good for varying lighting)
-        adaptive_thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                               cv2.THRESH_BINARY, 11, 2)
-        processed_images.append(adaptive_thresh)
+        # Try each color mask
+        masks = [
+            cv2.inRange(hsv, red_lower1, red_upper1) + cv2.inRange(hsv, red_lower2, red_upper2),
+            cv2.inRange(hsv, black_lower, black_upper),
+            cv2.inRange(hsv, white_lower, white_upper)
+        ]
         
-        # Method 5: Morphological operations
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-        morph = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-        processed_images.append(morph)
+        for mask in masks:
+            if np.sum(mask) > 0:  # If mask found something
+                # Apply mask and extract text
+                masked_image = cv2.bitwise_and(image, image, mask=mask)
+                gray_masked = cv2.cvtColor(masked_image, cv2.COLOR_BGR2GRAY)
+                
+                # Clean up the mask
+                kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+                cleaned_mask = cv2.morphologyEx(gray_masked, cv2.MORPH_CLOSE, kernel)
+                
+                text = pytesseract.image_to_string(cleaned_mask, config=r'--oem 3 --psm 8')
+                if text.strip():
+                    all_text.append(text.strip())
         
-        # Method 6: Edge enhancement for text on colored backgrounds
-        edges = cv2.Canny(gray, 50, 150)
-        dilated_edges = cv2.dilate(edges, kernel, iterations=1)
-        processed_images.append(dilated_edges)
+        return ' '.join(all_text)
         
-        return processed_images
-        
-    except Exception as e:
-        # If preprocessing fails, return original image
-        st.warning(f"Image preprocessing failed, using original: {str(e)}")
-        return [image]
+    except Exception:
+        return ""
 
 def clean_extracted_text(text):
     """
@@ -173,11 +199,12 @@ def get_text_confidence(image):
         img_array = np.array(image)
         if len(img_array.shape) == 3:
             img_array = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
-        
-        processed_image = preprocess_image(img_array)
+            gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = img_array
         
         # Get detailed OCR data
-        data = pytesseract.image_to_data(processed_image, output_type=pytesseract.Output.DICT)
+        data = pytesseract.image_to_data(gray, output_type=pytesseract.Output.DICT)
         
         # Calculate average confidence
         confidences = [int(conf) for conf in data['conf'] if int(conf) > 0]
