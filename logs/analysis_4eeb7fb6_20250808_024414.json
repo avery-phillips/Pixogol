@@ -1,0 +1,60 @@
+{
+  "analysis_id": "4eeb7fb6",
+  "timestamp": "2025-08-08T02:44:14.656581",
+  "timestamp_readable": "2025-08-08 02:44:14",
+  "filename": "Star Wars.jpg",
+  "extracted_text": "a;x!!ﬁ breime ery gb‘ﬁ..‘%ﬁi;’m g“'ﬁ i,f';%j;g%?é;i.fﬁ;jiiiéz%f i?ééig%:ij?%é;%.é il oy r@,»mg rs sal spasasens vl é;%ﬁ?ﬁé éi?i{&jg ‘j_w ‘m::v%%li%iﬁgéézggéé;.;t ‘—i-’ ﬁjﬁg",
+  "extracted_text_length": 172,
+  "risk_analysis": {
+    "overall_risk_level": "CRITICAL",
+    "confidence_score": 0.95,
+    "risk_categories": {
+      "copyright": {
+        "level": "HIGH",
+        "explanation": "The image contains visual elements from the 'Star Wars' franchise, which are protected under copyright law. This includes character images and designs that are likely part of the franchise's creative works.",
+        "identified_elements": [
+          "Character images",
+          "Designs related to 'Star Wars'"
+        ],
+        "recommendations": [
+          "Ensure proper licensing agreements are in place for use of 'Star Wars' imagery.",
+          "Consult with legal counsel to verify compliance with copyright laws."
+        ]
+      },
+      "trademark": {
+        "level": "CRITICAL",
+        "explanation": "The 'Star Wars' logo and brand name are prominently displayed, which are registered trademarks. Unauthorized use of these trademarks can lead to infringement issues.",
+        "identified_elements": [
+          "'STAR WARS' logo",
+          "Trademark symbols (™ or ®)"
+        ],
+        "recommendations": [
+          "Obtain permission from the trademark holder for any commercial use.",
+          "Avoid using the 'Star Wars' logo or name in a manner that suggests endorsement or affiliation without authorization."
+        ]
+      },
+      "brand": {
+        "level": "CRITICAL",
+        "explanation": "The entire display is dedicated to 'Star Wars' merchandise, indicating a strong association with the brand. This presents significant brand risk if used without permission.",
+        "identified_elements": [
+          "'Star Wars' themed merchandise",
+          "Brand logos and symbols"
+        ],
+        "recommendations": [
+          "Secure appropriate branding agreements for the display and sale of 'Star Wars' merchandise.",
+          "Ensure all branding guidelines from the franchise owner are strictly followed."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Conduct a thorough review of licensing agreements related to 'Star Wars' content.",
+      "Consult with intellectual property legal experts to ensure compliance with all relevant laws and regulations.",
+      "Implement a monitoring system to ensure ongoing compliance with brand and trademark usage."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
