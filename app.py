@@ -162,8 +162,11 @@ def generate_text_report(extracted_text, risk_analysis, analysis_id):
     report.append("-" * 27)
     if extracted_text == "[No text detected]":
         report.append("No text was detected in the image.")
+        report.append("Note: Analysis relies on visual content recognition.")
+    elif not extracted_text or len(extracted_text.strip()) < 3:
+        report.append("Minimal text detected - analysis relies primarily on visual content.")
     else:
-        report.append(extracted_text)
+        report.append(f"Detected text: {extracted_text}")
     report.append("")
     
     # Risk categories

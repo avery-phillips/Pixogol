@@ -75,22 +75,39 @@ def extract_text_from_image(image):
         except:
             pass
         
-        # Combine all results
+        # Combine all results with quality scoring
         if all_extracted_text:
-            # Combine all unique words from all methods
-            all_words = set()
+            # Score each extraction method result
+            scored_results = []
             for text in all_extracted_text:
-                words = text.lower().split()
-                for word in words:
-                    cleaned_word = word.strip('.,!?";:()[]{}*@#$%^&+=<>/')
-                    if len(cleaned_word) > 1:
-                        all_words.add(cleaned_word)
+                if text and len(text) > 3:  # Minimum length filter
+                    # Calculate quality score
+                    words = text.split()
+                    if len(words) > 0:
+                        # Prefer results with recognizable English words
+                        quality_score = calculate_text_quality(text)
+                        scored_results.append((text, quality_score))
             
-            # Return combined text
-            combined_text = " ".join(sorted(all_words))
-            return combined_text
-        else:
-            return ""
+            if scored_results:
+                # Sort by quality score (higher is better)
+                scored_results.sort(key=lambda x: x[1], reverse=True)
+                
+                # Use the highest quality result, or combine top results if similar quality
+                best_text = scored_results[0][0]
+                best_score = scored_results[0][1]
+                
+                # If multiple results have similar high quality, combine them
+                combined_words = set()
+                for text, score in scored_results:
+                    if score >= best_score * 0.8:  # Within 80% of best score
+                        words = text.lower().split()
+                        for word in words:
+                            if len(word) > 1 and word.isalpha():
+                                combined_words.add(word)
+                
+                return " ".join(sorted(combined_words)) if combined_words else best_text
+            
+        return ""
         
     except Exception as e:
         st.error(f"OCR processing failed: {str(e)}")
@@ -155,35 +172,96 @@ def extract_text_by_color(image):
 
 def clean_extracted_text(text):
     """
-    Clean and normalize extracted text
+    Clean and normalize extracted text with quality filtering
     
     Args:
         text: Raw text from OCR
         
     Returns:
-        str: Cleaned text
+        str: Cleaned text or empty string if text quality is poor
     """
     if not text:
         return ""
     
-    # Remove excessive whitespace
+    import re
+    
+    # Remove excessive whitespace and normalize
     lines = text.split('\n')
     cleaned_lines = []
     
     for line in lines:
-        # Strip whitespace and skip empty lines
         cleaned_line = line.strip()
         if cleaned_line:
             cleaned_lines.append(cleaned_line)
     
-    # Join lines with single spaces
     cleaned_text = ' '.join(cleaned_lines)
-    
-    # Remove multiple consecutive spaces
-    import re
     cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
     
-    return cleaned_text.strip()
+    # Quality filtering - reject text with too many non-alphanumeric characters
+    if cleaned_text:
+        # Count alphanumeric vs special characters
+        alphanumeric_count = sum(c.isalnum() or c.isspace() for c in cleaned_text)
+        total_count = len(cleaned_text)
+        
+        # If less than 60% of characters are alphanumeric/space, likely garbage
+        if total_count > 0 and (alphanumeric_count / total_count) < 0.6:
+            return ""
+        
+        # Remove lines with excessive punctuation or special characters
+        words = cleaned_text.split()
+        clean_words = []
+        
+        for word in words:
+            # Only keep words that are mostly letters/numbers
+            if len(word) >= 2:
+                clean_chars = sum(c.isalnum() for c in word)
+                if clean_chars / len(word) >= 0.7:  # At least 70% alphanumeric
+                    clean_words.append(word)
+        
+        # Return cleaned text only if we have meaningful words
+        if clean_words:
+            return ' '.join(clean_words)
+    
+    return ""
+
+def calculate_text_quality(text):
+    """
+    Calculate a quality score for extracted text
+    
+    Args:
+        text: Extracted text to evaluate
+        
+    Returns:
+        float: Quality score (0-1, higher is better)
+    """
+    if not text or len(text) < 2:
+        return 0.0
+    
+    score = 0.0
+    
+    # Factor 1: Ratio of alphabetic characters
+    alpha_ratio = sum(c.isalpha() for c in text) / len(text)
+    score += alpha_ratio * 0.4
+    
+    # Factor 2: Presence of complete words (length > 2)
+    words = text.split()
+    if words:
+        complete_words = [w for w in words if len(w) > 2 and w.isalpha()]
+        word_ratio = len(complete_words) / len(words)
+        score += word_ratio * 0.3
+    
+    # Factor 3: Lack of excessive punctuation
+    punct_ratio = sum(not c.isalnum() and not c.isspace() for c in text) / len(text)
+    score += (1 - punct_ratio) * 0.2
+    
+    # Factor 4: Reasonable word length distribution
+    if words:
+        avg_word_length = sum(len(w) for w in words) / len(words)
+        # Optimal word length is around 4-8 characters
+        if 3 <= avg_word_length <= 10:
+            score += 0.1
+    
+    return min(score, 1.0)
 
 def get_text_confidence(image):
     """

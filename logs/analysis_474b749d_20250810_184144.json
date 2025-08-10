@@ -1,0 +1,56 @@
+{
+  "analysis_id": "474b749d",
+  "timestamp": "2025-08-10T18:41:44.730886",
+  "timestamp_readable": "2025-08-10 18:41:44",
+  "filename": "Star Wars.jpg",
+  "extracted_text": "a;x!!ﬁ breime ery gb‘ﬁ..‘%ﬁi;’m g“'ﬁ i,f';%j;g%?é;i.fﬁ;jiiiéz%f i?ééig%:ij?%é;%.é il oy r@,»mg rs sal spasasens vl é;%ﬁ?ﬁé éi?i{&jg ‘j_w ‘m::v%%li%iﬁgéézggéé;.;t ‘—i-’ ﬁjﬁg",
+  "extracted_text_length": 172,
+  "risk_analysis": {
+    "overall_risk_level": "CRITICAL",
+    "confidence_score": 0.95,
+    "risk_categories": {
+      "copyright": {
+        "level": "HIGH",
+        "explanation": "The image contains merchandise and character designs from the 'Star Wars' universe, which are protected by copyright.",
+        "identified_elements": [
+          "Star Wars character designs",
+          "Star Wars merchandise packaging"
+        ],
+        "recommendations": [
+          "Ensure all uses of the image comply with licensing agreements from the copyright holder."
+        ]
+      },
+      "trademark": {
+        "level": "CRITICAL",
+        "explanation": "The 'Star Wars' logo is a registered trademark, and its use on merchandise is strictly controlled.",
+        "identified_elements": [
+          "Star Wars logo",
+          "Star Wars merchandise branding"
+        ],
+        "recommendations": [
+          "Verify that any use of the 'Star Wars' trademark is authorized by the trademark owner."
+        ]
+      },
+      "brand": {
+        "level": "CRITICAL",
+        "explanation": "The image prominently features 'Star Wars' branding, which is a major entertainment franchise.",
+        "identified_elements": [
+          "Star Wars branding",
+          "Star Wars franchise elements"
+        ],
+        "recommendations": [
+          "Avoid unauthorized commercial use of the 'Star Wars' brand to prevent infringement."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Consult with legal counsel to ensure compliance with intellectual property laws regarding the use of 'Star Wars' branded content.",
+      "Consider obtaining a license or permission from the rights holder for any commercial use."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
