@@ -1,0 +1,57 @@
+{
+  "analysis_id": "3b72524f",
+  "timestamp": "2025-08-10T18:33:53.373733",
+  "timestamp_readable": "2025-08-10 18:33:53",
+  "filename": "DC Test.png",
+  "extracted_text": "4%'r»\\o‘z \\'/f‘a a8 i.;!‘-—“/-f;%%iff l‘,,‘/\"’.-/;g!“q‘ii vy yy ‘\\;;rf;%\\ ‘».‘.»eyi‘i",
+  "extracted_text_length": 85,
+  "risk_analysis": {
+    "overall_risk_level": "CRITICAL",
+    "confidence_score": 0.95,
+    "risk_categories": {
+      "copyright": {
+        "level": "LOW",
+        "explanation": "The items depicted do not appear to contain any copyrighted text or creative works beyond the brand's standard logo and design.",
+        "identified_elements": [],
+        "recommendations": [
+          "Ensure that any use of the image respects the copyright of the Diet Coke brand's design elements."
+        ]
+      },
+      "trademark": {
+        "level": "CRITICAL",
+        "explanation": "The image prominently features the 'Diet Coke' brand name and logo, which are registered trademarks of The Coca-Cola Company.",
+        "identified_elements": [
+          "Diet Coke logo on socks",
+          "Diet Coke logo on hoodie",
+          "Diet Coke logo on pillow",
+          "Diet Coke logo on cap",
+          "Diet Coke logo on can"
+        ],
+        "recommendations": [
+          "Obtain permission from The Coca-Cola Company for any commercial use of these images.",
+          "Ensure that the use of these images does not imply endorsement or affiliation without authorization."
+        ]
+      },
+      "brand": {
+        "level": "CRITICAL",
+        "explanation": "The image contains multiple items featuring the 'Diet Coke' brand, indicating a high level of brand association.",
+        "identified_elements": [
+          "Diet Coke branding on multiple merchandise items"
+        ],
+        "recommendations": [
+          "Avoid using these images in a manner that could confuse consumers about the source or sponsorship of the products.",
+          "Consult with legal counsel to ensure compliance with brand usage guidelines."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Seek legal advice before using these images in any commercial context.",
+      "Consider reaching out to The Coca-Cola Company for guidance on permissible uses of their brand imagery."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}
