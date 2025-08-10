@@ -1,0 +1,58 @@
+{
+  "analysis_id": "1ada3409",
+  "timestamp": "2025-08-10T18:25:18.921480",
+  "timestamp_readable": "2025-08-10 18:25:18",
+  "filename": "DC Test.png",
+  "extracted_text": "4%'r»\\o‘z \\'/f‘a a8 i.;!‘-—“/-f;%%iff l‘,,‘/\"’.-/;g!“q‘ii vy yy ‘\\;;rf;%\\ ‘».‘.»eyi‘i",
+  "extracted_text_length": 85,
+  "risk_analysis": {
+    "overall_risk_level": "CRITICAL",
+    "confidence_score": 1.0,
+    "risk_categories": {
+      "copyright": {
+        "level": "LOW",
+        "explanation": "The image does not appear to contain any copyrighted text, quotes, or creative works beyond the brand elements.",
+        "identified_elements": [],
+        "recommendations": [
+          "Ensure no copyrighted designs or artworks are used without permission."
+        ]
+      },
+      "trademark": {
+        "level": "CRITICAL",
+        "explanation": "The image prominently features the 'Diet Coke' trademark on multiple items including a hoodie, socks, can, cap, and pillow/packaging. These are clear uses of the Diet Coke trademark.",
+        "identified_elements": [
+          "Diet Coke logo on hoodie",
+          "Diet Coke logo on socks",
+          "Diet Coke logo on can",
+          "Diet Coke logo on cap",
+          "Diet Coke logo on pillow/packaging"
+        ],
+        "recommendations": [
+          "Obtain proper licensing agreements for the use of Diet Coke trademarks on merchandise.",
+          "Consult with legal counsel to ensure compliance with trademark laws."
+        ]
+      },
+      "brand": {
+        "level": "CRITICAL",
+        "explanation": "The brand 'Diet Coke' is a well-known and highly protected brand. The use of its logo and branding on merchandise without authorization poses significant brand risks.",
+        "identified_elements": [
+          "Diet Coke branding on multiple merchandise items"
+        ],
+        "recommendations": [
+          "Verify that all uses of the Diet Coke brand are authorized by the brand owner.",
+          "Avoid using the brand in a way that could imply endorsement or partnership without permission."
+        ]
+      }
+    },
+    "general_recommendations": [
+      "Ensure all uses of the Diet Coke brand and trademarks are authorized by Coca-Cola Company.",
+      "Consider consulting with an intellectual property attorney to review the use of brand elements.",
+      "Implement a review process for all branded merchandise to prevent unauthorized use of trademarks."
+    ],
+    "legal_disclaimer": "This is an AI-generated assessment and should not replace professional legal advice."
+  },
+  "session_info": {
+    "user_agent": "Streamlit App",
+    "app_version": "1.0.0"
+  }
+}

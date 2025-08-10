@@ -25,6 +25,12 @@ def main():
     Upload an image to analyze potential copyright, trademark, and brand risks using advanced OCR and AI analysis.
     """)
     
+    # Initialize session state for analysis results
+    if 'analysis_results' not in st.session_state:
+        st.session_state.analysis_results = None
+    if 'current_filename' not in st.session_state:
+        st.session_state.current_filename = None
+    
     # Check for required API key
     if not os.getenv("OPENAI_API_KEY"):
         st.error("⚠️ OpenAI API key is required. Please set OPENAI_API_KEY in your environment variables.")
@@ -38,6 +44,11 @@ def main():
     )
     
     if uploaded_file is not None:
+        # Check if this is a new file (clear previous results)
+        if st.session_state.current_filename != uploaded_file.name:
+            st.session_state.analysis_results = None
+            st.session_state.current_filename = uploaded_file.name
+        
         # Create columns for layout
         col1, col2 = st.columns([1, 1])
         
@@ -61,6 +72,15 @@ def main():
             
             if st.button("🚀 Analyze Image", type="primary"):
                 analyze_image(image, uploaded_file.name)
+        
+        # Display results below the two-column layout if they exist
+        if st.session_state.analysis_results is not None:
+            st.markdown("---")  # Add separator line
+            display_results(
+                st.session_state.analysis_results['extracted_text'],
+                st.session_state.analysis_results['risk_analysis'],
+                st.session_state.analysis_results['analysis_id']
+            )
 
 def analyze_image(image, filename):
     """Analyze the uploaded image for legal risks"""
@@ -99,8 +119,15 @@ def analyze_image(image, filename):
         progress_bar.progress(100)
         status_text.text("✅ Analysis complete!")
         
-        # Display results
-        display_results(extracted_text, risk_analysis, analysis_id)
+        # Store results in session state
+        st.session_state.analysis_results = {
+            'extracted_text': extracted_text,
+            'risk_analysis': risk_analysis,
+            'analysis_id': analysis_id
+        }
+        
+        # Rerun to display results immediately
+        st.rerun()
         
     except Exception as e:
         st.error(f"❌ Analysis failed: {str(e)}")
